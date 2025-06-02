@@ -6,7 +6,7 @@
 #include "scene.h"
 #include "character.h"
 
-int setup_scene(scene &s_name, character &person1){
+int setup_scene(scene &scn, character &person1){
 
 	int x, y, posx, posy, i, j, count, flag;
 	srand(time(NULL));
@@ -16,13 +16,13 @@ int setup_scene(scene &s_name, character &person1){
 	while (true){
 		posx = (rand() % (x - 1)) + 1;
 		posy = (rand() % (y - 1)) + 1;
-		if(s_name.getContent(posx, posy) == ' '){
+		if(scn.getContent(posx, posy) == ' '){
 			flag = 1;
 			break;
 		}
 	}
 	person1.move(posx, posy);
-	s_name.setContent(posx, posy, person1.getName());
+	scn.setContent(posx, posy, person1.getName());
 	/*count = 0;
 	while(count < 2){
 		for(i = 1; i < x - 1; i++){
@@ -48,7 +48,6 @@ int setup_scene(scene &s_name, character &person1){
 int can_move(character &person, scene &scn){
 
 	srand(time(NULL));
-	void* path;
 	int i, j, posx, posy, flag, l, count;
 	if(person.getState() != 0){
 		return 0;
@@ -76,26 +75,24 @@ int can_move(character &person, scene &scn){
 			printw("N\n");
 		}
 	}
-/*	count = 0;
-	l = person.getLineLength();
-	j == 0;
-	for(i = 1; i <= l; i++){
-		path = person.wasHere();
-		if(around[j].x == path.x && around[j].y == path.y){
-			j++
-			count++;
-		}
-		if(count == 4){
-			break;
-		}
-	}*/
-	flag == 1;
+	count = 0;
 	while(true){
 		i = rand() % 4;
+		l = person.getPathLength();
+		j = 0;
+		flag = 1;
+		for(j = 1; j <= l; j ++){
+			if(((person.wasHereX(j) == around[i].x && person.wasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count <= 3){
+				count++;
+				around[i].x = 0;
+				around[i].y = 0;
+			}
+		}
 		if(scn.getContent(around[i].x, around[i].y) != '*'){
 			scn.setContent(posx, posy, ' ');
 			person.move(around[i].x, around[i].y);
 			scn.setContent(around[i].x, around[i].y, person.getName());
+			person.gotHere(around[i].x, around[i].y);
 			break;
 		}
 	}
