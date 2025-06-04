@@ -1,11 +1,12 @@
 #ifndef CHARACTER
 #define CHARACTER
 #include <ncurses.h>
+#include <vector>
 
-using namespace std;
+
 
 struct position{
-	int x, y;
+	int x, y, check;
 };
 
 class character{
@@ -13,10 +14,7 @@ class character{
 	private:
 		int x,y, state, has_key, path_len;
 		char name;
-		struct position{
-			int x, y;
-		};
-		vector<position> path;
+		std :: vector<position> path;
 	public:
 		character(char input);
 		character(int i, int j, char input);
@@ -28,9 +26,12 @@ class character{
 		void setInventory(int input);
 		int getX();
 		int getY();
-		int gotHere(int i, int j);
-//		position wasHere(int i);
-		int getPathLenght();
+		void gotHere(int i, int j);
+		int getWasHereX(int i);
+		int getWasHereY(int i);
+		int getWasHereCheck(int i);
+		void setWasHereCheck(int i);
+		int getPathLength();
 
 };
 
@@ -43,6 +44,8 @@ character :: character(char input){
 	state = 0;
 	has_key = 0;
 	path.push_back({0, 0});
+	//path[0].x = 0;
+	//path[0].y = 0;
 	path_len = 0;
 
 }
@@ -120,26 +123,59 @@ int character :: getY(){
 }
 
 
-int character :: gotHere(int i, int j){
+void character :: gotHere(int i, int j){
 
-	path.push_back({i, j});
+	path.push_back({i, j, 1});
 	path_len++;
 
 }
 
 
-/*position character :: wasHere(int i){
+int character :: getWasHereX(int i){
 
-	if(i >= path_len){
-		return path[i];
-	}
+	if(i < path_len){
+		return path[i].x;
 	}else{
-		return path[0];
+		return 0;
 	}
 
-}*/
+}
 
-int character :: getPathLenght(){
+
+int character :: getWasHereY(int i){
+
+	if(i < path_len){
+		return path[i].y;
+        }else{
+		return 0;
+	}
+
+}
+
+
+int character :: getWasHereCheck(int i){
+
+	if( i < path_len){
+		return path[i].check;
+	}else{
+		return 0;
+	}
+
+}
+
+
+void character :: setWasHereCheck(int i){
+
+	if ( path[i].check == 0){
+		path[i].check = 1;
+	}else{
+		path[i].check = 0;
+	}
+
+}
+
+
+int character :: getPathLength(){
 
 	return path_len;
 

@@ -6,23 +6,32 @@
 #include "scene.h"
 #include "character.h"
 
-int setup_scene(scene &scn, character &person1){
+int setup_scene(scene &scn, character &person1, character &person2){
 
 	int x, y, posx, posy, i, j, count, flag;
 	srand(time(NULL));
-	x = s_name.getHorizontalAxis();
-	y = s_name.getVerticalAxis();
+	x = scn.getHorizontalAxis();
+	y = scn.getVerticalAxis();
 	flag = 0;
 	while (true){
-		posx = (rand() % (x - 1)) + 1;
-		posy = (rand() % (y - 1)) + 1;
+		posx = (rand() % (x/2 - 1)) + 1;
+		posy = (rand() % (y/2 - 1)) + 1;
 		if(scn.getContent(posx, posy) == ' '){
-			flag = 1;
 			break;
 		}
 	}
 	person1.move(posx, posy);
 	scn.setContent(posx, posy, person1.getName());
+	person2.move(0, posy);
+	while(true){
+		posx = (rand() % (x/2 - 1)) + x/2 + 1;
+		posy = (rand() % (y/2 - 1)) + 1;
+		if(scn.getContent(posx, posy) == ' '){
+			break;
+		}
+	}
+	person2.move(posx, posy);
+        scn.setContent(posx, posy, person2.getName());
 	/*count = 0;
 	while(count < 2){
 		for(i = 1; i < x - 1; i++){
@@ -45,7 +54,7 @@ int setup_scene(scene &scn, character &person1){
 
 }
 
-int can_move(character &person, scene &scn){
+int check_move(character &person, scene &scn){
 
 	srand(time(NULL));
 	int i, j, posx, posy, flag, l, count;
@@ -82,7 +91,7 @@ int can_move(character &person, scene &scn){
 		j = 0;
 		flag = 1;
 		for(j = 1; j <= l; j ++){
-			if(((person.wasHereX(j) == around[i].x && person.wasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count <= 3){
+			if(((person.getWasHereX(j) == around[i].x && person.getWasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count <= 3){
 				count++;
 				around[i].x = 0;
 				around[i].y = 0;
