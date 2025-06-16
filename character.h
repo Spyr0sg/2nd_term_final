@@ -131,7 +131,7 @@ void character :: gotHere(int i, int j){
 }
 
 
-int character :: getWasHereX(int i){
+int character :: WasHereX(int i){
 
 	if(i < path_len){
 		return path[i].x;
@@ -142,7 +142,7 @@ int character :: getWasHereX(int i){
 }
 
 
-int character :: getWasHereY(int i){
+int character :: WasHereY(int i){
 
 	if(i < path_len){
 		return path[i].y;
@@ -153,7 +153,7 @@ int character :: getWasHereY(int i){
 }
 
 
-int character :: getWasHereCheck(int i){
+int character :: WasHereCheck(int i){
 
 	if( i < path_len){
 		return path[i].check;
