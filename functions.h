@@ -31,25 +31,7 @@ int setup_scene(scene &scn, character &person1, character &person2){
 		}
 	}
 	person2.move(posx, posy);
-        scn.setContent(posx, posy, person2.getName());
-	/*count = 0;
-	while(count < 2){
-		for(i = 1; i < x - 1; i++){
-			flag = 0;
-			for(j = 1; j < y - 1; j++){
-				if(s_name.getContent(i, j) == 'T'){
-					posx = i;
-					posy = j;
-					flag = 1;
-					break;
-				}
-			}
-			if(flag = 1){
-				break;
-			}
-		}
-		count++;
-	}*/
+    scn.setContent(posx, posy, person2.getName());
 	return 0;
 
 }
@@ -91,12 +73,12 @@ int check_move(character &person, scene &scn){
 		j = 0;
 		flag = 1;
 		for(j = 1; j <= l; j ++){
-			if(((person.getWasHereX(j) == around[i].x && person.getWasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count <= 3){
+			if(((person.WasHereX(j) == around[i].x && person.WasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count < 4){
 				count++;
 				around[i].x = 0;
 				around[i].y = 0;
 			}
-		}
+		} 
 		if(scn.getContent(around[i].x, around[i].y) != '*'){
 			scn.setContent(posx, posy, ' ');
 			person.move(around[i].x, around[i].y);

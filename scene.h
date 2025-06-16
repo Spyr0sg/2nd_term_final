@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <curses.h>
+#include <ncurses.h>
 using namespace std;
 
 class scene{
@@ -15,7 +15,7 @@ class scene{
 	public:
 		scene(char* map_name);
 		int build(char* map_name); //Initialize map environment
-		int prints(); //Print map environment on window
+		int printscene(); //Print map environment on window
 		int getVerticalAxis();
 		int getHorizontalAxis();
 		int getContent(int i, int j);
@@ -107,7 +107,7 @@ int scene :: build(char* map_name){
 }
 
 
-int scene :: prints(){
+int scene :: printscene(){
 
 	int i, j;
 	for(j = 0; j < y; j++){
@@ -158,4 +158,3 @@ int scene :: setContent(int i, int j, int c){
 }
 
 #endif
-
