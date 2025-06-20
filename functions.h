@@ -6,7 +6,7 @@
 #include "scene.h"
 #include "character.h"
 
-int setup_scene(scene &scn, character &person1, character &person2){
+int setup_scene(scene &scn, character &character1, character &character2){
 
 	int x, y, posx, posy, i, j, count, flag;
 	srand(time(NULL));
@@ -20,9 +20,9 @@ int setup_scene(scene &scn, character &person1, character &person2){
 			break;
 		}
 	}
-	person1.move(posx, posy);
-	scn.setContent(posx, posy, person1.getName());
-	person2.move(0, posy);
+	character1.move(posx, posy);
+	scn.setContent(posx, posy, character1.getName());
+	character2.move(0, posy);
 	while(true){
 		posx = (rand() % (x/2 - 1)) + x/2 + 1;
 		posy = (rand() % (y/2 - 1)) + 1;
@@ -30,68 +30,123 @@ int setup_scene(scene &scn, character &person1, character &person2){
 			break;
 		}
 	}
-	person2.move(posx, posy);
-    scn.setContent(posx, posy, person2.getName());
+	character2.move(posx, posy);
+    scn.setContent(posx, posy, character2.getName());
 	return 0;
 
 }
 
-int check_move(character &person, scene &scn){
 
+int set_object(char sprite, scene& scn){
+
+	int i, j;
 	srand(time(NULL));
-	int i, j, posx, posy, flag, l, count;
-	if(person.getState() != 0){
-		return 0;
-	}
-	struct block{
-		int x, y;
-	};
-	block* around = new block[4];
-	posx = person.getX();
-	posy = person.getY();
-	around[0].x = posx - 1;
-	around[0].y = posy;
-        around[1].x = posx + 1;
-        around[1].y = posy;
-        around[2].x = posx;
-        around[2].y = posy - 1;
-        around[3].x = posx;
-        around[3].y = posy + 1;
-	for(i = 0; i < 4; i++){
-		if(scn.getContent(around[i].x, around[i].y) == '*'){
-			printw("W\n");
-		}else if(scn.getContent(around[i].x, around[i].y) == ' '){
-			printw("C\n");
-		}else if(scn.getContent(around[i].x, around[i].y) == NULL){
-			printw("N\n");
-		}
-	}
-	count = 0;
 	while(true){
-		i = rand() % 4;
-		l = person.getPathLength();
+
+		i = rand()%scn.getHorizontalAxis();
+		j = rand()%scn.getVerticalAxis();
+		if(scn.getContent(i, j) == ' '){
+			scn.setContent(i, j, sprite);
+			break;
+		} 
+	}
+	return 0;
+}
+
+
+int check_move(character &character, scene& scn){
+	
+	int i, j, posx, posy, flag, l, count;
+	srand(time(NULL));
+	if(character.getState() == 0 || character.getState() == 2 ){
+		struct block{
+				int x, y, f = 0;
+		};
+		block* around = new block[4];
+		posx = character.getX();
+		posy = character.getY();
+		around[0].x = posx - 1;
+		around[0].y = posy;
+        around[1].x = posx + 1;
+   	    around[1].y = posy;
+   	    around[2].x = posx;
+		around[2].y = posy - 1;
+   		around[3].x = posx;
+        around[3].y = posy + 1;
+		count = 0;
+		l = character.getPathLength();
 		j = 0;
 		flag = 1;
-		for(j = 1; j <= l; j ++){
-			if(((person.WasHereX(j) == around[i].x && person.WasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count < 4){
-				count++;
-				around[i].x = 0;
-				around[i].y = 0;
-			}
-		} 
-		if(scn.getContent(around[i].x, around[i].y) != '*'){
-			scn.setContent(posx, posy, ' ');
-			person.move(around[i].x, around[i].y);
-			scn.setContent(around[i].x, around[i].y, person.getName());
-			person.gotHere(around[i].x, around[i].y);
-			break;
+		for(i = 0; i < 4; i++){
+			for(j = 1; j <= l; j ++){
+				if(((character.WasHereX(j) == around[i].x && character.WasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count < 4){
+					count++;
+					around[i].f = 1;
+				}
+			} 
 		}
-	}
-	delete[] around;
+		while(true){
+			i = rand()%4;
+			if((scn.getContent(around[i].x, around[i].y) != '*' && around[i].f == 0) || (scn.getContent(around[i].x, around[i].y) != '*' && count == 4)){
+				if(scn.getContent(around[i].x, around[i].y) == 'T'){
+					scn.setContent(posx, posy, ' ');
+					character.setState(1);
+					character.move(around[i].x, around[i].y);
+					scn.setContent(around[i].x, around[i].y, 'C');
+					//if(around[i].f == 0){
+						character.gotHere(around[i].x, around[i].y);
+					//}
+				}else if(scn.getContent(around[i].x, around[i].y) == 'K'){
+					character.setState(2);
+				}else{
+					scn.setContent(posx, posy, ' ');
+					character.move(around[i].x, around[i].y);
+					scn.setContent(around[i].x, around[i].y, character.getName());
+					character.gotHere(around[i].x, around[i].y);
+				}
+				break;
+			}
+			
+		}
+		delete[] around;
+	}else if(character.getState() == 1){
+			scn.setContent(character.getX(), character.getY(), 'C');
+	}/*else if(character.getState() == 3){
+		int x, y;
+		x = scn.getGateX();
+		y = scn.getGateY();
+		return 1;
+
+	}*/
+	
 	return 0;
 
 }
 
+int are_together(character& character1, character& character2){
+
+	if(character1.getX() == character2.getX() && character1.getY() == character2.getY() && ((character1.getState() == 0 && character2.getState() == 0) || character1.getState() == 2 || character2.getState() == 2)){
+		character1.setState(3);
+		character2.setState(3);
+		return 1;
+	}
+	return 0;
+
+}
+
+
+void destroy(scene& scn){
+
+	int i, j;
+	for(j = 0; j < scn.getVerticalAxis(); j++){
+		for(i = 0; i < scn.getHorizontalAxis(); i++ ){
+			if(scn.getContent(i, j) == '*' || scn.getContent(i, j) == 'T' || scn.getContent(i, j) == 'K'){
+				scn.setContent(i, j, ' ');
+				usleep(50000);
+			}
+		}
+	}
+}
 
 
 #endif

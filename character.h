@@ -1,6 +1,5 @@
 #ifndef CHARACTER
 #define CHARACTER
-#include <ncurses.h>
 #include <vector>
 
 
@@ -27,9 +26,9 @@ class character{
 		int getX();
 		int getY();
 		void gotHere(int i, int j);
-		int getWasHereX(int i);
-		int getWasHereY(int i);
-		int getWasHereCheck(int i);
+		int WasHereX(int i);
+		int WasHereY(int i);
+		int WasHereCheck(int i);
 		void setWasHereCheck(int i);
 		int getPathLength();
 
