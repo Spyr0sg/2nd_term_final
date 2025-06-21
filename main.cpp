@@ -1,18 +1,29 @@
 #include <iostream>
 #include <ncurses.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include "scene.h"
 #include "character.h"
 #include "functions.h"
+#include "menu.h"
+#define A 9
+
 
 
 int main(void){
 
     int i, j, moves, flag = 0;
     moves = 1000;
+    char map[9];
 	initscr();
-	scene maze("map1.txt");
+    if(menu() == 1){
+	    strcpy(map, "map1.txt");
+    }else{
+        strcpy(map, "map2.dat");
+    }
+    clear();
+    scene maze(map);
 	character giannakis('G');
 	character asimenia('S');
 	setup_scene(maze, giannakis, asimenia);
