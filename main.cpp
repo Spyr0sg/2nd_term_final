@@ -9,7 +9,7 @@
 
 int main(void){
 
-    int i, j, moves, flag = 1;
+    int i, j, moves, flag = 0;
     moves = 1000;
 	initscr();
 	scene maze("map1.txt");
@@ -34,10 +34,21 @@ int main(void){
             
         }
         check_move(asimenia, maze);
+        if(are_together(asimenia, giannakis) == 1){
+           flag = 1; 
+           break;
+            
+        }
+        
         maze.printScene();
+        if((giannakis.getState() == 0 && asimenia.getState() == 0) || giannakis.getState() == 3 || asimenia.getState() == 3){
+            printw("Uh oh! Both characters are trapped! The kingdom has fallen...\nPress any key to close the program.\n");
+            refresh();
+            getchar();
+            endwin();
+            return 0;
+        }
         moves--;
-        printw("Giannakis position: x = %d, y = %d\n",giannakis.getX(), giannakis.getY());
-        printw("Asimenia position: x = %d, y = %d\n",asimenia.getX(), asimenia.getY());
         printw("Moves left: %d\n", moves);
         usleep(50000);
         refresh();
@@ -50,12 +61,33 @@ int main(void){
 			    	maze.setContent(i, j, ' ');
                     maze.printScene();
                     refresh();
-			    	usleep(50000);
+			    	usleep(30000);
 			    }
             }
         }
+        clear();
+        maze.setContent(maze.getLadderX(), maze.getLadderY(), 'L');
+        maze.printScene();
+        refresh();
+        flag = 0;
+        while(flag == 0){
+            clear();
+            escape(giannakis, maze);
+            escape(asimenia, maze);
+            if(giannakis.getX() == maze.getLadderX() && giannakis.getY() == maze.getLadderY()){
+                flag = 1;
+            }
+            maze.printScene();
+            refresh();
+            usleep(10000);
+        }
+        printw("Yippee! The characters escaped! The kingdom has been saved! Rejoice!\nPress any key to close the program.\n");
+        refresh();
+        getchar();
+        endwin();
+        return 0;
     }
-    printw("Moves have been depleted. Press any key to continue.");
+    printw("Oh no! The characters ran out of time! The evil Wizzard has won. The kingdom has fallen...\nPress any key to close the program.");
     refresh();
     getchar();
     endwin();
