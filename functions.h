@@ -94,10 +94,14 @@ int check_move(character &character, scene& scn){
 		}
 		while(flag == 0){
 			i = rand()%4;
-			if(around[i].f == 0 || count == 4){
+			if((around[i].f == 0 || count == 4) && scn.getContent(around[i].x, around[i].y) != '*'){
 				if(scn.getContent(around[i].x, around[i].y) == 'T'){
 					scn.setContent(posx, posy, ' ');
-					character.setState(0);
+					if(character.getState() == 1){
+						character.setState(0);
+					}else{
+						character.setState(3);
+					}
 					character.move(around[i].x, around[i].y);
 					scn.setContent(around[i].x, around[i].y, 'C');
 					if(around[i].f == 0){
@@ -111,7 +115,7 @@ int check_move(character &character, scene& scn){
 						character.gotHere(around[i].x, around[i].y);
 					}
 					character.setState(2);
-				}else if(scn.getContent(around[i].x, around[i].y) == ' '){
+				}else if(scn.getContent(around[i].x, around[i].y) != 'C'){
 					scn.setContent(posx, posy, ' ');
 					character.move(around[i].x, around[i].y);
 					scn.setContent(around[i].x, around[i].y, character.getName());
@@ -124,7 +128,7 @@ int check_move(character &character, scene& scn){
 			
 		}
 		delete[] around;
-	}else if(character.getState() == 3){
+	}else if(character.getState() == 4){
 		int x, y;
 		x = scn.getLadderX();
 		y = scn.getLadderY();
@@ -139,15 +143,37 @@ int check_move(character &character, scene& scn){
 int are_together(character& character1, character& character2){
 
 	if(character1.getX() == character2.getX() && character1.getY() == character2.getY()){
-		character1.setState(3);
-		character2.setState(3);
+		character1.setState(4);
+		character2.setState(4);
 		return 1;
 	}
 	return 0;
 
 }
 
+int escape(character& character, scene& scn){
 
+	int nextX = character.getX(), nextY = character.getY();
+	if(character.getX() != scn.getLadderX()){
+		if(scn.getLadderX() > character.getX()){
+			nextX++;
+		}else{
+			nextX--;
+		}
+	}
+	if(scn.getLadderY() != character.getY()){
+		if(scn.getLadderY() > character.getY()){
+			nextY++;
+		}else{
+			nextY--;
+		}
+	}
+	scn.setContent(character.getX(), character.getY(), ' ');
+	character.move(nextX, nextY);
+	scn.setContent(character.getX(), character.getY(), character.getName());
+	return 0;
+
+}
 
 
 #endif
