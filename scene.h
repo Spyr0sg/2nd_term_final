@@ -10,14 +10,16 @@ class scene{
 
 	private:
 		vector<vector<char> > env; //environment 2d vector
-		int x = 0, y = 0;
+		int x = 0, y = 0, ladderX, ladderY;
 		FILE *map;
 	public:
 		scene(char* map_name);
 		int build(char* map_name); //Initialize map environment
-		int printscene(); //Print map environment on window
+		int printScene(); //Print map environment on window
 		int getVerticalAxis();
 		int getHorizontalAxis();
+		int getLadderX();
+		int getLadderY();
 		int getContent(int i, int j);
 		int setContent(int i, int j, int c);
 
@@ -64,11 +66,11 @@ scene :: scene(char* map_name){
 		x = x_max - 1;
 		fclose(map);
 		build(map_name);
-		;
+		ladderX = x / 2;
+		ladderY = y / 2;
 	}
 
 }
-
 
 int scene :: build(char* map_name){
 
@@ -106,8 +108,7 @@ int scene :: build(char* map_name){
 
 }
 
-
-int scene :: printscene(){
+int scene :: printScene(){
 
 	int i, j;
 	for(j = 0; j < y; j++){
@@ -122,13 +123,11 @@ int scene :: printscene(){
 
 }
 
-
 int scene :: getHorizontalAxis(){
 
 	return x;
 
 }
-
 
 int scene :: getVerticalAxis(){
 
@@ -136,6 +135,17 @@ int scene :: getVerticalAxis(){
 
 }
 
+int scene :: getLadderX(){
+
+		return ladderX;
+
+}
+
+int scene :: getLadderY(){
+
+	return ladderY;
+	
+}
 
 int scene :: getContent(int i, int j){
 

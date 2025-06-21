@@ -58,7 +58,7 @@ int check_move(character &character, scene& scn){
 	
 	int i, j, posx, posy, flag, l, count;
 	srand(time(NULL));
-	if(character.getState() == 0 || character.getState() == 2 ){
+	if(character.getState() == 1 || character.getState() == 2 ){
 		struct block{
 				int x, y, f = 0;
 		};
@@ -76,48 +76,61 @@ int check_move(character &character, scene& scn){
 		count = 0;
 		l = character.getPathLength();
 		j = 0;
-		flag = 1;
+		flag = 0;
 		for(i = 0; i < 4; i++){
 			for(j = 1; j <= l; j ++){
 				if(((character.WasHereX(j) == around[i].x && character.WasHereY(j) == around[i].y) || scn.getContent(around[i].x, around[i].y) == '*') && count < 4){
 					count++;
-					around[i].f = 1;
+					around[i].f = 1; 
 				}
-			} 
-		}
-		while(true){
-			i = rand()%4;
-			if((scn.getContent(around[i].x, around[i].y) != '*' && around[i].f == 0) || (scn.getContent(around[i].x, around[i].y) != '*' && count == 4)){
-				if(scn.getContent(around[i].x, around[i].y) == 'T'){
-					scn.setContent(posx, posy, ' ');
-					character.setState(1);
-					character.move(around[i].x, around[i].y);
-					scn.setContent(around[i].x, around[i].y, 'C');
-					//if(around[i].f == 0){
-						character.gotHere(around[i].x, around[i].y);
-					//}
-				}else if(scn.getContent(around[i].x, around[i].y) == 'K'){
-					character.setState(2);
-				}else{
+				if(scn.getContent(around[i].x, around[i].y) == 'C' && character.getState() == 2){
 					scn.setContent(posx, posy, ' ');
 					character.move(around[i].x, around[i].y);
 					scn.setContent(around[i].x, around[i].y, character.getName());
 					character.gotHere(around[i].x, around[i].y);
+					flag = 1;
+				}
+			} 
+		}
+		while(flag == 0){
+			i = rand()%4;
+			if(around[i].f == 0 || count == 4){
+				if(scn.getContent(around[i].x, around[i].y) == 'T'){
+					scn.setContent(posx, posy, ' ');
+					character.setState(0);
+					character.move(around[i].x, around[i].y);
+					scn.setContent(around[i].x, around[i].y, 'C');
+					if(around[i].f == 0){
+						character.gotHere(around[i].x, around[i].y);
+					}
+				}else if(scn.getContent(around[i].x, around[i].y) == 'K'){
+					scn.setContent(posx, posy, ' ');
+					character.move(around[i].x, around[i].y);
+					scn.setContent(around[i].x, around[i].y, character.getName());
+					if(around[i].f == 0){
+						character.gotHere(around[i].x, around[i].y);
+					}
+					character.setState(2);
+				}else if(scn.getContent(around[i].x, around[i].y) == ' '){
+					scn.setContent(posx, posy, ' ');
+					character.move(around[i].x, around[i].y);
+					scn.setContent(around[i].x, around[i].y, character.getName());
+					if(around[i].f == 0){
+						character.gotHere(around[i].x, around[i].y);
+					}
 				}
 				break;
 			}
 			
 		}
 		delete[] around;
-	}else if(character.getState() == 1){
-			scn.setContent(character.getX(), character.getY(), 'C');
-	}/*else if(character.getState() == 3){
+	}else if(character.getState() == 3){
 		int x, y;
-		x = scn.getGateX();
-		y = scn.getGateY();
+		x = scn.getLadderX();
+		y = scn.getLadderY();
 		return 1;
 
-	}*/
+	}
 	
 	return 0;
 
@@ -125,7 +138,7 @@ int check_move(character &character, scene& scn){
 
 int are_together(character& character1, character& character2){
 
-	if(character1.getX() == character2.getX() && character1.getY() == character2.getY() && ((character1.getState() == 0 && character2.getState() == 0) || character1.getState() == 2 || character2.getState() == 2)){
+	if(character1.getX() == character2.getX() && character1.getY() == character2.getY()){
 		character1.setState(3);
 		character2.setState(3);
 		return 1;
@@ -135,18 +148,6 @@ int are_together(character& character1, character& character2){
 }
 
 
-void destroy(scene& scn){
-
-	int i, j;
-	for(j = 0; j < scn.getVerticalAxis(); j++){
-		for(i = 0; i < scn.getHorizontalAxis(); i++ ){
-			if(scn.getContent(i, j) == '*' || scn.getContent(i, j) == 'T' || scn.getContent(i, j) == 'K'){
-				scn.setContent(i, j, ' ');
-				usleep(50000);
-			}
-		}
-	}
-}
 
 
 #endif

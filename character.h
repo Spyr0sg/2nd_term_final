@@ -40,7 +40,7 @@ character :: character(char input){
 	x = 0;
 	y = 0;
 	name = input;
-	state = 0;
+	state = 1;
 	has_key = 0;
 	path.push_back({0, 0});
 	//path[0].x = 0;
